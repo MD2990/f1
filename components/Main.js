@@ -1,5 +1,6 @@
 import { Button } from '@chakra-ui/button';
 import { Box, Center, HStack, Text, VStack } from '@chakra-ui/layout';
+import { StyledStepper } from '@chakra-ui/number-input';
 import {
 	Slider,
 	SliderFilledTrack,
@@ -9,39 +10,31 @@ import {
 import React, { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import state from '../store';
-import { subscribe } from 'valtio';
-import { AnimatePresence } from 'framer-motion';
 
-let c = 0;
 function getRandomNumber(min, max) {
 	const number = Math.floor(Math.random() * (max - min) + min);
 
 	return number;
 }
-const POC = () => {
-	return <Center mt='10%'></Center>;
-};
 
 const PC = ({ speed, start, name }) => {
 	const snap = useSnapshot(state);
 
 	useEffect(() => {
-		//	if ( snap.speed === 100) state.start = false;
-		speed == 100 && state.results.push({ name: name });
-
 		const move = setInterval(() => {
-			if (start) {
-				if (speed <= 95) {
-					state.server.map((s) => (s.speed += getRandomNumber(1, 7)));
-					//state.server[0].speed += num;
+			if (snap.start) {
+				// First check for start is false or not
 
-					state.server.map((s) => (s.speed > 90 ? (s.speed = 100) : null));
-				}
+				state.server.map((s) => {
+					if (s.speed >= 100) {
+						state.start = false;
+					} else s.speed += getRandomNumber(1, 7); // if less  than 100, add random number to speed
+				});
 			}
 		}, 500);
 
 		return () => clearInterval(move);
-	}, [name, speed, start]);
+	}, [speed, snap.start]);
 
 	return (
 		<Center mt='10%'>
@@ -80,60 +73,45 @@ const Buttons = () => {
 	return (
 		<HStack>
 			<Button
-				isDisabled={!snap.start || snap.pos == 100}
+				isDisabled={!snap.start}
 				onClick={() => {
 					const num = getRandomNumber(1, 7);
 
-					if (snap.pos <= 95) {
-						state.pos += num;
-
-						if (snap.pos > 90) {
-							state.pos = 100;
-							state.results.push({ name: 'Majdi' });
-						}
-					}
-
-					if (snap.pos == 100) {
+					if (snap.user.speed < 100) {
+						state.user.speed += num;
+					} else {
 						state.start = false;
 					}
 				}}>
 				+
 			</Button>
 			<Button
+				isDisabled={!snap.play}
 				onClick={() => {
-					state.pos = 0;
-					state.pc = 0;
 					state.start = false;
-
+					state.user.speed = 0;
 					state.server.map((s) => {
 						s.speed = 0;
-						s.start = false;
-						state.results = [];
 					});
+					state.play = false;
 				}}>
 				rest
 			</Button>
 			<Button
-				isDisabled={snap.pc === snap.pos ? false : snap.start}
+				isDisabled={snap.play}
 				onClick={() => {
 					state.start = true;
-
-					if (snap.pc === 100 && snap.pos === 100) {
-						state.pos = 0;
-						state.pc = 0;
-						state.start = true;
-					}
-					state.server.map((s) => (s.start = true));
+					state.play = true;
 				}}>
-				{snap.pc === 100 && snap.pos === 100 ? 'Play Again' : 'Start'}
+				Play
 			</Button>
 
 			<Button
-				isDisabled={!state.start}
+				isDisabled={!snap.play}
 				onClick={() => {
 					state.start = !snap.start;
 				}}>
-				Pause
+				{state.start ? 'Resume' : 'Pause'}
 			</Button>
 		</HStack>
 	);
@@ -141,20 +119,27 @@ const Buttons = () => {
 
 const Results = () => {
 	const snap = useSnapshot(state);
+
+	let ss = [...snap.server, snap.user];
+
+	let dd = ss.sort((a, b) =>
+		a.speed < b.speed ? 1 : b.speed < a.speed ? -1 : 1,
+	);
+
 	return (
 		<>
-			{snap.results.length &&
-				snap.results.map((r, i) => {
-					return (
-						<Center ml='5%' key={i}>
+			{dd.map((r) => {
+				return (
+					<Center ml='5%' key={r.id}>
+						<>
 							<VStack>
-								<Text>
-									No: {i + 1} {r.name}
-								</Text>
+								<Text> {r.name} </Text>
+								<Text> Speed: {r.speed}</Text>
 							</VStack>
-						</Center>
-					);
-				})}
+						</>
+					</Center>
+				);
+			})}
 		</>
 	);
 };
@@ -162,27 +147,27 @@ const Boxes = () => {
 	const snap = useSnapshot(state);
 	return (
 		<Center mt={['5%', '6%', '7%', '8%']}>
-			results: <Results />
-			<VStack spacing='10'>
-				<HStack spacing='12' mb='22px'>
-					<Text>{snap.pc}</Text>
-					<Text>{snap.pos}</Text>
-				</HStack>
-				<HStack>
+			<VStack spacing='2'>
+				{/* 	<HStack spacing='12' mb='22px'>
+					<Text>{snap.user.speed}</Text>
+					<Text>{snap.user.speed}</Text>
+				</HStack> */}
+				<HStack justify='center' w='2xl'>
+					<Results />
 					<Box
 						bg='red'
 						w='10'
 						h='10'
 						rounded='full'
-						bottom={`${snap.pos}px`}
+						bottom={`${snap.user.speed}px`}
 						position='relative'>
-						<Text textAlign='center'> PC</Text>{' '}
+						<Text textAlign='center'> {snap.user.name}</Text>{' '}
 					</Box>
 					<Slider
-						id='pos'
+						id='user'
 						aria-label='slider-ex-3'
 						defaultValue={0}
-						value={snap.pos}
+						value={snap.user.speed}
 						orientation='vertical'
 						minH='32'>
 						<SliderTrack>
@@ -195,12 +180,14 @@ const Boxes = () => {
 	);
 };
 export default function Main() {
+	const snap = useSnapshot(state);
+
 	return (
 		<Center mt='10%'>
+			{/* 			{snap.results.map((s, i) => <Text key={i} > {s.name} { s.speed} <br></br> </Text> )}
+			 */}{' '}
 			<Boxes />
-			<POC />
 			<Server />
-
 			<Buttons />
 		</Center>
 	);
