@@ -1,4 +1,5 @@
 import { Button } from '@chakra-ui/button';
+import { Input } from '@chakra-ui/input';
 import { Box, Center, HStack, Text, VStack } from '@chakra-ui/layout';
 import { StyledStepper } from '@chakra-ui/number-input';
 import {
@@ -28,6 +29,7 @@ const PC = ({ speed, start, name }) => {
 				state.server.map((s) => {
 					if (s.speed >= 100) {
 						state.start = false;
+						state.resume = false;
 					} else s.speed += getRandomNumber(1, 7); // if less  than 100, add random number to speed
 				});
 			}
@@ -68,6 +70,46 @@ const Server = () => {
 	);
 };
 
+function UserName() {
+	const snap = useSnapshot(state);
+	const ref = useRef('');
+	const name = useRef('');
+
+	const handleChange = (e) => {
+		const name = (ref.current = e.target.value);
+		return name;
+	};
+	console.log(name.current.value);
+
+	return (
+		<>
+			<VStack>
+				<Text mb='8px'>Name: {snap.user.name} </Text>
+
+				<br />
+				<Input
+					ml='5'
+					mr='5'
+					w='90px'
+					ref={(e) => (name.current = e)}
+					placeholder='Here is a sample placeholder'
+					size='sm'
+				/>
+				<Button
+					onClick={() => {
+						name.current.value
+							? (state.user.name = name.current.value)
+							: snap.user.name;
+						state.showName = false;
+					}}>
+					{' '}
+					ok{' '}
+				</Button>
+			</VStack>
+		</>
+	);
+}
+
 const Buttons = () => {
 	const snap = useSnapshot(state);
 	return (
@@ -81,38 +123,45 @@ const Buttons = () => {
 						state.user.speed += num;
 					} else {
 						state.start = false;
+						state.resume = false;
 					}
 				}}>
 				+
 			</Button>
 			<Button
-				isDisabled={!snap.play}
+				isDisabled={snap.rest}
 				onClick={() => {
 					state.start = false;
 					state.user.speed = 0;
 					state.server.map((s) => {
 						s.speed = 0;
 					});
-					state.play = false;
+					state.play = true;
+					state.resume = false;
 				}}>
 				rest
 			</Button>
 			<Button
-				isDisabled={snap.play}
+				isDisabled={!snap.play}
 				onClick={() => {
 					state.start = true;
-					state.play = true;
+					state.resume = !snap.resume;
+					state.play = !snap.play;
 				}}>
 				Play
 			</Button>
 
 			<Button
-				isDisabled={!snap.play}
+				isDisabled={!snap.resume}
 				onClick={() => {
+					state.resume = !snap.resume;
 					state.start = !snap.start;
+					state.play = !snap.play;
 				}}>
-				{state.start ? 'Resume' : 'Pause'}
+				{!snap.start ? 'Resume' : 'Pause'}
 			</Button>
+
+			<Button onClick={() => (state.showName = true)}>Change Name</Button>
 		</HStack>
 	);
 };
@@ -184,8 +233,8 @@ export default function Main() {
 
 	return (
 		<Center mt='10%'>
-			{/* 			{snap.results.map((s, i) => <Text key={i} > {s.name} { s.speed} <br></br> </Text> )}
-			 */}{' '}
+			{snap.showName && <UserName />}
+
 			<Boxes />
 			<Server />
 			<Buttons />
