@@ -12,13 +12,17 @@ import React, { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import state from '../store';
 
+import { FaCar } from 'react-icons/fa';
+
+import { nanoid } from 'nanoid';
+
 function getRandomNumber(min, max) {
 	const number = Math.floor(Math.random() * (max - min) + min);
 
 	return number;
 }
 
-const PC = ({ speed, start, name }) => {
+const PC = ({ speed, start, name, i }) => {
 	const snap = useSnapshot(state);
 
 	useEffect(() => {
@@ -30,6 +34,7 @@ const PC = ({ speed, start, name }) => {
 					if (s.speed >= 100) {
 						state.start = false;
 						state.resume = false;
+						state.end = true;
 					} else s.speed += getRandomNumber(1, 7); // if less  than 100, add random number to speed
 				});
 			}
@@ -37,19 +42,28 @@ const PC = ({ speed, start, name }) => {
 
 		return () => clearInterval(move);
 	}, [speed, snap.start]);
+	const icons = [
+		<FaCar size='5rem' key={nanoid()} />,
+		<FaCar size='5rem' key={nanoid()} />,
+		<FaCar size='5rem' key={nanoid()} />,
+		<FaCar size='5rem' key={nanoid()} />,
+	];
 
+	const colors = ['gray', 'green.500', 'yellow.600', 'blue.400'];
 	return (
 		<Center mt='10%'>
-			<Box
-				bg='red'
-				w='10'
-				h='10'
-				rounded='full'
-				bottom={`${speed}px`}
-				position='relative'>
-				<Text textAlign='center'> {name}</Text>
-				<Text textAlign='center'> {speed}</Text>
-			</Box>
+			<HStack spacing='4'>
+				<Box
+					color={colors[i]}
+					m='4'
+					w='10'
+					h='10'
+					rounded='full'
+					bottom={`${speed}px`}
+					position='relative'>
+					{icons[i]}
+				</Box>
+			</HStack>
 		</Center>
 	);
 };
@@ -59,10 +73,10 @@ const Server = () => {
 
 	return (
 		<>
-			{snap.server.map((s) => {
+			{snap.server.map((s, i) => {
 				return (
 					<Center key={s.id}>
-						<PC speed={s.speed} start={s.start} name={s.name} />
+						<PC speed={s.speed} start={s.start} name={s.name} i={i} />
 					</Center>
 				);
 			})}
@@ -74,12 +88,6 @@ function UserName() {
 	const snap = useSnapshot(state);
 	const ref = useRef('');
 	const name = useRef('');
-
-	const handleChange = (e) => {
-		const name = (ref.current = e.target.value);
-		return name;
-	};
-	console.log(name.current.value);
 
 	return (
 		<>
@@ -124,6 +132,7 @@ const Buttons = () => {
 					} else {
 						state.start = false;
 						state.resume = false;
+						state.end = true;
 					}
 				}}>
 				+
@@ -131,6 +140,7 @@ const Buttons = () => {
 			<Button
 				isDisabled={snap.rest}
 				onClick={() => {
+					state.end = false;
 					state.start = false;
 					state.user.speed = 0;
 					state.server.map((s) => {
@@ -171,13 +181,20 @@ const Results = () => {
 
 	let ss = [...snap.server, snap.user];
 
-	let dd = ss.sort((a, b) =>
+	let results = ss.sort((a, b) =>
 		a.speed < b.speed ? 1 : b.speed < a.speed ? -1 : 1,
 	);
 
 	return (
 		<>
-			{dd.map((r) => {
+			{snap.end && (
+				<Center>
+					<VStack>
+						<Text>{results[0].name} Won !!! </Text>
+					</VStack>
+				</Center>
+			)}
+			{results.map((r) => {
 				return (
 					<Center ml='5%' key={r.id}>
 						<>
@@ -194,6 +211,7 @@ const Results = () => {
 };
 const Boxes = () => {
 	const snap = useSnapshot(state);
+	const img = 'img/1.svg';
 	return (
 		<Center mt={['5%', '6%', '7%', '8%']}>
 			<VStack spacing='2'>
@@ -201,17 +219,15 @@ const Boxes = () => {
 					<Text>{snap.user.speed}</Text>
 					<Text>{snap.user.speed}</Text>
 				</HStack> */}
-				<HStack justify='center' w='2xl'>
+				<HStack justify='center' spacing='8'>
 					<Results />
 					<Box
-						bg='red'
+						backgroundImage={`url(data:image/svg+xml;utf8,${img})`}
 						w='10'
 						h='10'
 						rounded='full'
 						bottom={`${snap.user.speed}px`}
-						position='relative'>
-						<Text textAlign='center'> {snap.user.name}</Text>{' '}
-					</Box>
+						position='relative'></Box>
 					<Slider
 						id='user'
 						aria-label='slider-ex-3'

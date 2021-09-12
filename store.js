@@ -9,6 +9,7 @@ const state = proxy({
 	rest: false,
 	start: false,
 	results: [],
+	end: false,
 	userName: 'Your Name',
 	server: [
 		{ id: nanoid(), name: 'A', speed: 0, auto: 0, start: false },
