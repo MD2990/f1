@@ -12,10 +12,10 @@ const state = proxy({
 	end: false,
 	userName: 'Your Name',
 	server: [
-		{ id: nanoid(), name: 'A', speed: 0, auto: 0, start: false },
-		{ id: nanoid(), name: 'B', speed: 0, auto: 0, start: false },
-		{ id: nanoid(), name: 'C', speed: 0, auto: 0, start: false },
-		{ id: nanoid(), name: 'D', speed: 0, auto: 0, start: false },
+		{ id: nanoid(), name: 'Donna', speed: 0, auto: 0, start: false },
+		{ id: nanoid(), name: 'Adelyn', speed: 0, auto: 0, start: false },
+		{ id: nanoid(), name: 'Teal', speed: 0, auto: 0, start: false },
+		{ id: nanoid(), name: 'Perry', speed: 0, auto: 0, start: false },
 	],
 });
 
