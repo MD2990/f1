@@ -1,33 +1,20 @@
-import { Button, IconButton } from '@chakra-ui/button';
+import { IconButton } from '@chakra-ui/button';
 import { Input } from '@chakra-ui/input';
 import {
 	Box,
 	Center,
-	Grid,
-	GridItem,
 	HStack,
 	SimpleGrid,
 	Stack,
 	Text,
 	VStack,
-	Wrap,
-	WrapItem,
 } from '@chakra-ui/layout';
-import { StyledStepper } from '@chakra-ui/number-input';
 import { Icon } from '@iconify/react';
 ('@iconify/react');
 
-import {
-	Slider,
-	SliderFilledTrack,
-	SliderThumb,
-	SliderTrack,
-} from '@chakra-ui/slider';
 import React, { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import state from '../store';
-
-import { FaCar } from 'react-icons/fa';
 
 import { nanoid } from 'nanoid';
 
@@ -37,7 +24,7 @@ function getRandomNumber(min, max) {
 	return number;
 }
 
-const PC = ({ speed, start, name, i }) => {
+const PC = ({ speed, name, i }) => {
 	const snap = useSnapshot(state);
 
 	useEffect(() => {
@@ -53,7 +40,7 @@ const PC = ({ speed, start, name, i }) => {
 					} else s.speed += getRandomNumber(18, 25); // if less  than 100, add random number to speed
 				});
 			}
-		}, 215);
+		}, 200);
 
 		return () => clearInterval(move);
 	}, [speed, snap.start]);
@@ -126,8 +113,6 @@ function UserName() {
 	return (
 		<>
 			<VStack>
-				<Text>Name: {snap.user.name} </Text>
-
 				<Input
 					w='100px'
 					ref={(e) => (name.current = e)}
@@ -140,8 +125,12 @@ function UserName() {
 					rounded='full'
 					aria-label='Accelerate'
 					onClick={() => {
-						name.current.value
-							? (state.user.name = name.current.value.toUpperCase())
+						const names = name.current.value || 'You';
+						names
+							? (state.user.name =
+									names.length > 7
+										? names.substring(0, 5)
+										: names.toUpperCase())
 							: snap.user.name;
 						state.showName = false;
 					}}
@@ -255,15 +244,6 @@ const Buttons = () => {
 						)
 					}
 				/>
-
-				{/* 	<IconButton
-					isDisabled={!snap.start}
-					variant='unsyled'
-					rounded='full'
-					aria-label='Accelerate'
-					onClick={() => (state.showName = true)}
-					icon={<Icon icon='ei:user' color='#B22222	' width='62' height='62' />}
-				/> */}
 			</SimpleGrid>
 		</>
 	);
@@ -315,18 +295,6 @@ const Boxes = () => {
 					rotate={0}
 				/>
 			</Box>
-
-			{/* 		<Slider
-						id='user'
-						aria-label='slider-ex-3'
-						defaultValue={0}
-						value={snap.user.speed}
-						orientation='vertical'
-						minH='32'>
-						<SliderTrack>
-						<SliderFilledTrack />
-						</SliderTrack>
-					</Slider> */}
 		</VStack>
 	);
 };
