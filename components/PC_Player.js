@@ -7,6 +7,8 @@ import state from '../store';
 import Icons from './Icons';
 import { getRandomNumber } from './Main';
 
+import TheBox from './TheBox';
+import count from './lib/constens';
 // Each player has a unique name, speed
 // {i} to be used as index for icons to get a unique one for
 export default function PC_Player({ speed, name, i }) {
@@ -18,11 +20,11 @@ export default function PC_Player({ speed, name, i }) {
 				// First check for start is false or not
 
 				state.server.map((s) => {
-					if (s.speed >= 950) {
+					if (s.speed >= count) {
 						state.start = false;
 						state.resume = false;
 						state.end = true;
-					} else s.speed += getRandomNumber(15, 30); // if less  than 950, add random number to speed
+					} else s.speed += getRandomNumber(5, 25); // if less  than 950, add random number to speed
 				});
 			}
 		}, 225);
@@ -39,13 +41,9 @@ export default function PC_Player({ speed, name, i }) {
 	];
 
 	return (
-		<VStack>
-			<Box right={`${speed}px`} position='relative' px='2' ml='200%'>
-				<Text textAlign='center' mt='1' className='names'>
-					{name}
-				</Text>
-				<Icons icon={icons[i]} />
-			</Box>
-		</VStack>
+		<TheBox speed={speed} name={name} >
+		
+			<Icons icon={icons[i]} />
+		</TheBox>
 	);
 }

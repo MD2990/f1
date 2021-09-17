@@ -36,3 +36,7 @@ button:focus {
 
   border-color:  linear-gradient(90deg, rgba(204, 33, 104, 0) 27%, rgba(224,30,119,0.16010154061624648) 39%, rgba(255,0,219,0.7259278711484594) 63%);
 }
+p,div{
+
+  user-select: none!important;
+}

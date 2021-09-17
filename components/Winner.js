@@ -17,23 +17,23 @@ export default function Winner() {
 
 	const theWinner =
 		results[0].name === snap.user.name
-			? 'Congratulation you won'
-			: `Sorry you lost !!! ${results[0].name} Won`;
+			? 'You won !!!'
+			: `You lost, ${results[0].name} Won`;
 	let userIsWinner = results[0].name === snap.user.name ? true : false;
 
 	return (
 		<>
 			{snap.end && (
 				<Box
-					mx='2'
+					mx='1'
 					bg={userIsWinner ? 'green.300' : 'red.300'}
-					p='2'
+					p='1'
 					borderRadius='xl'>
 					<Text
 						fontFamily='sans-serif'
 						color={userIsWinner ? 'green.50' : 'red.50'}
-						fontSize='xl'
-						p='2'>
+						fontSize='sm'
+						p='1'>
 						{theWinner}{' '}
 					</Text>
 				</Box>
@@ -50,25 +50,19 @@ export default function Winner() {
 						bg='red.400'
 						mx='1%'
 						color='red.50'
-						fontSize='lg'
+						fontSize='sm'
 						fontFamily='sans-serif'
-						fontWeight='bold'
-						key={r.id}
-						filter='drop-shadow(8px 8px 10px pink)'>
+						fontWeight='light'
+						filter='drop-shadow(8px 8px 10px pink)'
+						key={r.id}>
 						<HStack
-							spacing='50px'
+							spacing='5px'
 							overflow='hidden'
 							textOverflow='clip'
 							whiteSpace='nowrap'>
-							<Wrap>
-								<WrapItem>
-									<Text> {r.name} </Text>
-								</WrapItem>
+							<Text> {r.name} </Text>
 
-								<WrapItem>
-									<Text> Speed: {r.speed}</Text>
-								</WrapItem>
-							</Wrap>
+							<Text> {r.speed}</Text>
 						</HStack>
 					</Center>
 				);
