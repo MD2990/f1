@@ -1,16 +1,24 @@
-import { Box, VStack, Text } from '@chakra-ui/layout';
+import { Box, VStack, Text } from "@chakra-ui/layout";
+import React from "react";
 
-import React from 'react';
-
-export default function UserBox({ speed, children,name }) {
-	return (
-		<VStack   >
-			<Box    right={`${speed}px`} position='relative' px='2'>
-				<Text textAlign='center' mt='1' className='names'>
-					{name}
-				</Text>
-				{children}
-			</Box>
-		</VStack>
-	);
+export default function TheBox({ speed, children, name }) {
+  return (
+    <VStack align="center" textAlign={'center'} >
+      <Box
+ 
+        right={`${speed}px`}
+        position="relative"
+        px="2"
+        fontSize={["lg", "xl", "3xl", "6xl"]}
+      >
+        <Text mt="1" className="names"  >
+          {name}
+        </Text>
+        
+          {children}
+       
+      </Box>
+      
+    </VStack>
+  );
 }

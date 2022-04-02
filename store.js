@@ -11,6 +11,7 @@ const state = proxy({
 	results: [],
 	end: false,
 	userName: 'Your Name',
+	w:0,
 	server: [
 		{ id: nanoid(), name: 'Donna', speed: 0 },
 		{ id: nanoid(), name: 'Adelyn', speed: 0 },

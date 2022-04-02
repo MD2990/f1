@@ -5,14 +5,14 @@ import React from 'react';
 
 export default function IconsButtons({ name, isDisabled, onClick, icon }) {
 	return (
-		<IconButton
-		
-			isDisabled={isDisabled}
-			variant='unsyled'
-			rounded='full'
-			aria-label={name}
-			onClick={onClick}
-			icon={icon}
-		/>
-	);
+    <IconButton
+      fontSize={["sm", "md", "lg", "4xl"]}
+      isDisabled={isDisabled}
+      variant="unsyled"
+      rounded="full"
+      aria-label={name}
+      onClick={onClick}
+      icon={icon}
+    />
+  );
 }

@@ -20,10 +20,10 @@ export default function UserBox() {
 		<TheBox speed={snap.user.speed} name={snap.user.name}>
 		
 			<Icon
+				
 				icon='emojione:person-biking'
 				color='blue'
-				width='82'
-				height='82'
+			
 				rotate={0}
 			/>
 		</TheBox>
