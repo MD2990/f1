@@ -1,16 +1,16 @@
+"use client";
 import { Field, IconButton } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/react";
 import { HStack } from "@chakra-ui/react";
 import { Icon } from "@iconify/react";
 ("@iconify/react");
 
-import React, { useRef } from "react";
+import React from "react";
 import { useSnapshot } from "valtio";
 import state from "../../store";
-import { toaster } from "@/components/ui/toaster";
+import { toaster } from "../ui/toaster";
 export default function UserName() {
 	const snap = useSnapshot(state);
-	const name = useRef("");
 
 	return (
 		<>
@@ -36,6 +36,12 @@ export default function UserName() {
 						mx="3"
 						value={snap.userName}
 						onChange={(e) => (state.userName = e.target.value)}
+						// on Enter
+						onKeyDown={(e) => {
+							if (e.key === "Enter") {
+								setUserName();
+							}
+						}}
 					/>
 					<Field.HelperText>Your Name</Field.HelperText>
 				</Field.Root>
@@ -45,21 +51,23 @@ export default function UserName() {
 					aria-label="Accelerate"
 					size={["xs", "sm", "md", "lg"]}
 					variant="unsyled"
-					onClick={() => {
-						if (!snap.userName.length) {
-							return toaster.create({
-								description: "File saved successfully",
-								type: "loading",
-							});
-						}
-
-						state.user.name = snap.userName;
-						state.showName = false;
-					}}
+					onClick={setUserName}
 				>
 					<Icon icon="bytesize:send" color="#bb6060" />
 				</IconButton>
 			</HStack>
 		</>
 	);
+
+	function setUserName() {
+		if (!snap.userName.length) {
+			return toaster.create({
+				description: "Please Enter Your Name",
+				type: "warning",
+				duration: 3000,
+			});
+		}
+		state.user.name = snap.userName?.trim()?.toUpperCase();
+		state.showName = false;
+	}
 }

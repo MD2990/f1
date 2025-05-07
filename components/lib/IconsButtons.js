@@ -12,10 +12,10 @@ export default function IconsButtons({
 	return (
 		<IconButton
 			fontSize={["sm", "md", "lg", "2xl"]}
-			isDisabled={isDisabled}
+			disabled={isDisabled}
 			bg="pink.50"
 			variant={"subtle"}
-			size={"lg"}
+			size={["sm", "md", "lg", "2xl"]}
 			rounded="full"
 			aria-label={name}
 			onClick={onClick}

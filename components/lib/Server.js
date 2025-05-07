@@ -11,7 +11,15 @@ export default function Server() {
 	return (
 		<>
 			{snap.server.map((s, i) => {
-				return <PC_Player key={s.id} speed={s.speed} name={s.name} i={i} />;
+				return (
+					<PC_Player
+						key={s.id}
+						speed={s.speed}
+						name={s.name}
+						i={i}
+						color={s.color}
+					/>
+				);
 			})}
 		</>
 	);

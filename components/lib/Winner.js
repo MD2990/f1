@@ -6,6 +6,7 @@ import { useSnapshot } from "valtio";
 import state from "../../store";
 import { fontSize } from "./constens";
 import UserName from "./UserName";
+import { toaster } from "../ui/toaster";
 
 export default function Winner() {
 	const snap = useSnapshot(state);
@@ -18,10 +19,16 @@ export default function Winner() {
 
 	const theWinner =
 		results[0].name === snap.user.name
-			? "You won !!!"
-			: `You lost, ${results[0].name} Won`;
+			? `${snap.user.name} You won !!!`
+			: ` You lost, ${results[0].name} Won`;
 	let userIsWinner = results[0].name === snap.user.name ? true : false;
-
+	if (snap.end) {
+		toaster.create({
+			description: theWinner + "🎉🎉🎉",
+			type: "success",
+			duration: 3000,
+		});
+	}
 	return (
 		<>
 			{snap.end && (
@@ -35,7 +42,6 @@ export default function Winner() {
 						whiteSpace={"nowrap"}
 						overflow={"hidden"}
 						textOverflow={"ellipsis"}
-						fontFamily="sans-serif"
 						color={userIsWinner ? "green.50" : "red.50"}
 						fontSize={fontSize}
 						p="1"
@@ -55,7 +61,6 @@ export default function Winner() {
 				mx="1%"
 				color="red.50"
 				fontSize={fontSize}
-				fontFamily="sans-serif"
 				fontWeight="light"
 				filter="drop-shadow(8px 8px 10px pink)"
 			>

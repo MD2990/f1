@@ -7,15 +7,14 @@ import { useSnapshot } from "valtio";
 import state from "../../store";
 import IconsButtons from "./IconsButtons";
 import { getRandomNumber } from "./Main";
+import { MAX_WINDOW_SIZE } from "./constens";
 
 export default function Buttons() {
 	const snap = useSnapshot(state);
 	const Icons = ({ icon }) => <Icon icon={icon} color="#ff1493" />;
 	function handelAccelerate() {
-		const num = getRandomNumber(10, 30);
-
-		if (snap.user.speed < snap.w - 120) {
-			state.user.speed += num;
+		if (snap.user.speed < snap.w - MAX_WINDOW_SIZE) {
+			state.user.speed += getRandomNumber(12, 20);
 		} else {
 			state.start = false;
 			state.resume = false;
@@ -47,7 +46,7 @@ export default function Buttons() {
 
 	return (
 		<VStack align="center">
-			<HStack spacing={[2, 3, 4, 5]} my="4">
+			<HStack my="4" spaceX={[1, 2, 4, 6, 8]}>
 				<Separator />
 				<IconsButtons
 					name={"Accelerate"}
